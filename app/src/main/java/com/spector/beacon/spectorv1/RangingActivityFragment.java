@@ -86,6 +86,8 @@ public class RangingActivityFragment extends Fragment {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
                 //Beacon ranging code goes here
+
+                //Show a list of beacons
                 ArrayList<Beacon> beaconArrayList = new ArrayList<>(beacons);
                 if (beaconAdapter == null) {
                     beaconAdapter = new BeaconAdapter(getActivity(), R.layout.list_item_beacon, beaconArrayList);
@@ -95,6 +97,9 @@ public class RangingActivityFragment extends Fragment {
                     beaconAdapter.clear();
                     beaconAdapter.addAll(beaconArrayList);
                 }
+
+                //Send beacons and their distances back to the server
+                //Terry I will use whatever class you make here
             }
         });
 

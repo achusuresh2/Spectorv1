@@ -21,9 +21,15 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/ranging_button"
-        android:layout_below="@id/header_text"
-        android:id="@+id/doctor_button"
-        android:text="Doctor Mode" />
+        android:layout_below="@id/ranging_button"
+        android:id="@+id/spector_button"
+        android:text="Spector Mode" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spector_button"
+        android:id="@+id/manage_button"
+        android:text="Beacon Management Mode" />
 
 </RelativeLayout>

@@ -4,4 +4,9 @@
     <string name="action_settings">Settings</string>
     <string name="welcome_text">Select a mode to begin</string>
     <string name="title_activity_ranging">Ranging Mode</string>
+    <string name="title_activity_login">Sign In</string>
+    <string name="login_welcome">Enter information to sign in</string>
+    <string name="AppID">APP_ID</string>
+    <string name="AppToken">APP_TOKEN</string>
+    <string name="ProximityUUID">ProximityUUID</string>
 </resources>
