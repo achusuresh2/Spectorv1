@@ -9,4 +9,8 @@
     <string name="AppID">APP_ID</string>
     <string name="AppToken">APP_TOKEN</string>
     <string name="ProximityUUID">ProximityUUID</string>
+    <string name="title_activity_beacon_management">Beacon Management Tools</string>
+    <string name="title_activity_enroll_beacon">Enroll a new Beacon</string>
+    <string name="enroll_instruction">Touch beacon to enroll individually or press enroll all</string>
+    <string name="normal_proximity_uuid">B9407F30-F5F8-466E-AFF9-25556B57FE6D</string>
 </resources>

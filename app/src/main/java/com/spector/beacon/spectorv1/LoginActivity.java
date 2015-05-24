@@ -23,7 +23,7 @@ public class LoginActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 //For now this code will always return true
-                SessionDetails sessionDetails = new SessionDetails("APP_ID","APP_TOKEN","PROXUUID");
+                SessionDetails sessionDetails = new SessionDetails("APP_ID","APP_TOKEN","B9407F30-F5F8-466E-AFF9-25556B57FE6D");
                 ((SpectorApp)getApplicationContext()).setSessionDetails(sessionDetails);
                 setResult(1);
                 auth = true;

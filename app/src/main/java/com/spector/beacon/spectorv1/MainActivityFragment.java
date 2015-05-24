@@ -53,7 +53,8 @@ public class MainActivityFragment extends Fragment {
         manageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"This feature is not yet available either!", Toast.LENGTH_LONG).show();
+                Intent manageIntent = new Intent(getActivity(), BeaconManagement.class);
+                startActivity(manageIntent);
             }
         });
         return rootView;

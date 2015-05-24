@@ -9,27 +9,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/welcome_text"
-        android:id="@+id/header_text"/>
+        android:id="@+id/header_text"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_below="@id/header_text"
         android:id="@+id/ranging_button"
-        android:text="Ranging Mode" />
+        android:text="Ranging Mode"
+        android:layout_centerInParent="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ranging_button"
         android:id="@+id/spector_button"
-        android:text="Spector Mode" />
+        android:text="Spector Mode"
+        android:layout_centerInParent="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/spector_button"
         android:id="@+id/manage_button"
-        android:text="Beacon Management Mode" />
+        android:text="Beacon Management Mode"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

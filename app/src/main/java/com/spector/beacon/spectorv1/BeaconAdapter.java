@@ -42,7 +42,7 @@ public class BeaconAdapter extends ArrayAdapter<Beacon> {
             TextView distText = (TextView)v.findViewById(R.id.distance_text);
 
             if (uuidText != null) {
-                uuidText.setText("Beacon: " + beacon.getProximityUUID());
+                uuidText.setText("Beacon: " + beacon.getMacAddress());
             }
 
             if (majorText != null) {

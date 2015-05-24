@@ -21,6 +21,7 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,13 +32,15 @@ import java.util.List;
  */
 public class RangingActivityFragment extends Fragment {
 
-    private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
-    private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
+    private static String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    private static Region ALL_ESTIMOTE_BEACONS = null;
 
     private BeaconManager beaconManager;
     private String LOG_TAG = "";
 
     private BeaconAdapter beaconAdapter;
+
+    private ArrayList<Beacon> lastSeenBeacons = null;
 
     public RangingActivityFragment() {
     }
@@ -71,9 +74,19 @@ public class RangingActivityFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        //Get the organization UUID if available, otherwise use default - In production there will always be one.
+        String loadedProxUUID = ((SpectorApp)getActivity().getApplicationContext()).getSessionDetails().getProxUUID();
+        if (loadedProxUUID != "PROXUUID") {
+            ESTIMOTE_PROXIMITY_UUID = loadedProxUUID;
+        }
+        ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
+
         //Initialize the beacon manager and get the Log Tag
         beaconManager = new BeaconManager(getActivity());
         LOG_TAG = getClass().toString();
+
+        //Make sure the scanner scans for 200ms every 1 second
+        beaconManager.setForegroundScanPeriod(200, 1000);
 
         //Make sure bluetooth is on
         if (beaconManager.isBluetoothEnabled() == false) {
@@ -89,6 +102,7 @@ public class RangingActivityFragment extends Fragment {
 
                 //Show a list of beacons
                 ArrayList<Beacon> beaconArrayList = new ArrayList<>(beacons);
+                lastSeenBeacons = beaconArrayList;
                 if (beaconAdapter == null) {
                     beaconAdapter = new BeaconAdapter(getActivity(), R.layout.list_item_beacon, beaconArrayList);
                     final ListView listBeacon = (ListView)getView().findViewById(R.id.list_beacon);

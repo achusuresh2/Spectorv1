@@ -34,6 +34,22 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" >
         </activity>
+        <activity
+            android:name=".BeaconManagement"
+            android:label="@string/title_activity_beacon_management"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.spector.beacon.spectorv1.MainActivity" />
+        </activity>
+        <activity
+            android:name=".EnrollBeacon"
+            android:label="@string/title_activity_enroll_beacon"
+            android:parentActivityName=".BeaconManagement" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.spector.beacon.spectorv1.BeaconManagement" />
+        </activity>
     </application>
 
 </manifest>
