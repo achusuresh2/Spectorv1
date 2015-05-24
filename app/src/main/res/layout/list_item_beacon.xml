@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:padding="16dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/uuid_text"
+        android:text="Beacon: B9407F30-F5F8-466E-AFF9-25556B57FE6D"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/major_text"
+        android:layout_below="@id/uuid_text"
+        android:text="Major: 0"
+        android:paddingRight="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/minor_text"
+        android:layout_below="@id/uuid_text"
+        android:layout_toRightOf="@id/major_text"
+        android:text="Minor: 0"
+        android:paddingRight="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/distance_text"
+        android:layout_below="@id/uuid_text"
+        android:layout_toRightOf="@id/minor_text"
+        android:text="Distance: 0"/>
+</RelativeLayout>
