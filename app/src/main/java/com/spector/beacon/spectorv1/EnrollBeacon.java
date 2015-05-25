@@ -37,8 +37,14 @@ public class EnrollBeacon extends ActionBarActivity {
     private BeaconManager beaconManager = null;
     private String LOG_TAG = "";
 
+    private BeaconConnection connection = null;
+    private SessionDetails sessionDetails = null;
+
     private BeaconAdapter beaconAdapter;
     private ArrayList<Beacon> visibleBeacons = null;
+
+    private boolean enrollDone = false;
+
     ListView listBeacon = null;
 
     @Override
@@ -94,6 +100,8 @@ public class EnrollBeacon extends ActionBarActivity {
                                 visibleBeacons.add(selectedBeacon);
                                 if (enrollBeacons(visibleBeacons) == true) {
                                     Toast.makeText(context, "Beacon " + selectedBeacon.getMacAddress() + " was successfully enrolled!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Beacon " + selectedBeacon.getMacAddress() + " failed to enroll", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -151,14 +159,31 @@ public class EnrollBeacon extends ActionBarActivity {
     }
 
     private boolean enrollBeacons(ArrayList<Beacon> beacons) {
-
-        SessionDetails sessionDetails = ((SpectorApp)getApplicationContext()).getSessionDetails();
+        enrollDone = false;
+        sessionDetails = ((SpectorApp)getApplicationContext()).getSessionDetails();
+        EstimoteSDK.enableDebugLogging(true);
         EstimoteSDK.initialize(this, sessionDetails.getAppID(), sessionDetails.getAppToken());
         for (Beacon beacon: beacons) {
-            BeaconConnection connection = new BeaconConnection(this, beacon, new BeaconConnection.ConnectionCallback() {
+            connection = new BeaconConnection(this, beacon, new BeaconConnection.ConnectionCallback() {
                 @Override
                 public void onAuthenticated(BeaconInfo beaconInfo) {
-                    Log.v(this.getClass().toString(), "Connected to beacon: " + beaconInfo.macAddress);
+                    Log.e(this.getClass().toString(), "Connected to beacon: " + beaconInfo.macAddress);
+
+                    //If connected to the beacon, overwrite the proximity UUID
+                    connection.writeMajor(123, new BeaconConnection.WriteCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.e(this.getClass().toString(), "UUID Write Successful!");
+                            enrollDone = true;
+                        }
+
+                        @Override
+                        public void onError(EstimoteDeviceException e) {
+                            Log.e(this.getClass().toString(), "Error writing to beacon. " + e.getMessage());
+                        }
+                    });
+
+                    connection.close();
                 }
 
                 @Override
@@ -168,28 +193,20 @@ public class EnrollBeacon extends ActionBarActivity {
 
                 @Override
                 public void onDisconnected() {
-                    Log.v(this.getClass().toString(), "Disconnected from beacon");
+                    Log.e(this.getClass().toString(), "Disconnected from beacon");
                 }
             });
 
             connection.authenticate();
 
-            connection.writeProximityUuid(sessionDetails.getProxUUID(), new BeaconConnection.WriteCallback() {
-                @Override
-                public void onSuccess() {
-                    Log.v(this.getClass().toString(), "UUID Write Successful!");
-                }
 
-                @Override
-                public void onError(EstimoteDeviceException e) {
-                    Log.e(this.getClass().toString(), "Error writing to beacon. " + e.getMessage());
-                }
-            });
-
-            connection.close();
-
+            }
+        if (enrollDone) {
+            return true;
+        } else {
+            return false;
         }
-        return true;
+
     }
 
 }
