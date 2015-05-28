@@ -196,7 +196,7 @@ public class EnrollBeacon extends ActionBarActivity {
                     Log.e(this.getClass().toString(), "Disconnected from beacon");
                 }
             });
-
+            Log.e(LOG_TAG, "About to try connection");
             connection.authenticate();
 
 

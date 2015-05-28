@@ -21,6 +21,10 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +106,6 @@ public class RangingActivityFragment extends Fragment {
 
                 //Show a list of beacons
                 ArrayList<Beacon> beaconArrayList = new ArrayList<>(beacons);
-                lastSeenBeacons = beaconArrayList;
                 if (beaconAdapter == null) {
                     beaconAdapter = new BeaconAdapter(getActivity(), R.layout.list_item_beacon, beaconArrayList);
                     final ListView listBeacon = (ListView)getView().findViewById(R.id.list_beacon);
@@ -113,7 +116,43 @@ public class RangingActivityFragment extends Fragment {
                 }
 
                 //Send beacons and their distances back to the server
-                //Terry I will use whatever class you make here
+                JSONArray beaconsJSON = new JSONArray();
+                for (Beacon beacon: beaconArrayList) {
+                    JSONObject beaconJSON = new JSONObject();
+                    try {
+                        beaconJSON.put("MAC",beacon.getMacAddress());
+                        beaconJSON.put("BASE STATION","Random Station ID");
+                        beaconJSON.put("DISTANCE",Utils.computeAccuracy(beacon));
+                    } catch (JSONException ex) {
+                        Log.e(LOG_TAG, "JSON ERROR: " + ex.getMessage());
+                    }
+                    beaconsJSON.put(beaconJSON);
+                }
+
+                if (lastSeenBeacons != null) {
+                    for (Beacon beacon: lastSeenBeacons) {
+                        if (beaconArrayList.contains(beacon) == false){
+                            //Code to add lost beacons to JSON beacon collection
+                            JSONObject beaconJSON = new JSONObject();
+                            try {
+                                beaconJSON.put("MAC",beacon.getMacAddress());
+                                beaconJSON.put("BASE STATION","Random Station ID");
+                                beaconJSON.put("DISTANCE",-1);
+                            } catch (JSONException ex) {
+                                Log.e(LOG_TAG, "JSON ERROR: " + ex.getMessage());
+                            }
+                            beaconsJSON.put(beaconJSON);
+                        }
+                    }
+                }
+
+                //New Async Task to send beacons to server
+                //would go here
+
+
+                //Store just seen beacons for next scan
+                lastSeenBeacons = beaconArrayList;
+
             }
         });
 
