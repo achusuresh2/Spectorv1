@@ -20,21 +20,21 @@ public interface BeaconHTTPInterface {
      * @return
      */
     @GET("/api/users/{user}")
-    Gson getUser(@Path("user") String macAddr);
+    String getUser(@Path("user") String macAddr);
 
     /**
      * Returns list of all macaddress
      * @return Gson
      */
     @GET("/api/users/")
-    List<Gson> listMacAddr();
+    List<String> listMacAddr();
 
     /**
      * @param macAddr the macAddress of the beacon
      * @return the beacon if it is successful
      */
     @DELETE("/api/users/{user}")
-    Gson deleteMacAddr(@Path("user") String macAddr);
+    String deleteMacAddr(@Path("user") String macAddr);
 
     /**
      *
@@ -43,8 +43,8 @@ public interface BeaconHTTPInterface {
      * @return
      */
     @POST("/api/user/{user}")
-    Gson updateMacAddrProp(@Path("user") String macAddr, @Body Gson update);
+    String updateMacAddrProp(@Path("user") String macAddr, @Body String update);
 
     @POST("/api/users/")
-    Gson createUser(@Body Gson user);
+    String createUser(@Body String user);
 }

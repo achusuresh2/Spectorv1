@@ -23,8 +23,9 @@ public class LoginActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 //For now this code will always return true
-                SessionDetails sessionDetails = new SessionDetails("spector","889b38feda25296d5045c5e174060db1","B9407F30-F5F8-466E-AFF9-25556B57FE6D");
+                SessionDetails sessionDetails = new SessionDetails("spector","1ff297d39f31f44d054c74baa5d3e59e","B9407F30-F5F8-466E-AFF9-25556B57FE6D");
                 ((SpectorApp)getApplicationContext()).setSessionDetails(sessionDetails);
+                ((SpectorApp)getApplicationContext()).setBaseStationID("BaseStation12345");
                 setResult(1);
                 auth = true;
                 finish();

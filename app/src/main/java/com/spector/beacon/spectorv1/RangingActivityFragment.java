@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,8 @@ import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import retrofit.converter.GsonConverter;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,6 +44,7 @@ public class RangingActivityFragment extends Fragment {
 
     private static String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static Region ALL_ESTIMOTE_BEACONS = null;
+    private String baseStationID = null;
 
     private BeaconManager beaconManager;
     private String LOG_TAG = "";
@@ -53,6 +60,7 @@ public class RangingActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_ranging, container, false);
+        baseStationID = ((SpectorApp)getActivity().getApplicationContext()).getBaseStationID();
         return rootView;
     }
 
@@ -120,9 +128,9 @@ public class RangingActivityFragment extends Fragment {
                 for (Beacon beacon: beaconArrayList) {
                     JSONObject beaconJSON = new JSONObject();
                     try {
-                        beaconJSON.put("MAC",beacon.getMacAddress());
-                        beaconJSON.put("BASE STATION","Random Station ID");
-                        beaconJSON.put("DISTANCE",Utils.computeAccuracy(beacon));
+                        beaconJSON.put("MacAddress",beacon.getMacAddress());
+                        beaconJSON.put("BaseStationID",baseStationID);
+                        beaconJSON.put("Distance",Utils.computeAccuracy(beacon));
                     } catch (JSONException ex) {
                         Log.e(LOG_TAG, "JSON ERROR: " + ex.getMessage());
                     }
@@ -135,9 +143,9 @@ public class RangingActivityFragment extends Fragment {
                             //Code to add lost beacons to JSON beacon collection
                             JSONObject beaconJSON = new JSONObject();
                             try {
-                                beaconJSON.put("MAC",beacon.getMacAddress());
-                                beaconJSON.put("BASE STATION","Random Station ID");
-                                beaconJSON.put("DISTANCE",-1);
+                                beaconJSON.put("MacAddress",beacon.getMacAddress());
+                                beaconJSON.put("BaseStationID",baseStationID);
+                                beaconJSON.put("Distance",-1);
                             } catch (JSONException ex) {
                                 Log.e(LOG_TAG, "JSON ERROR: " + ex.getMessage());
                             }
@@ -148,7 +156,8 @@ public class RangingActivityFragment extends Fragment {
 
                 //New Async Task to send beacons to server
                 //would go here
-
+                UpdateBeaconStatusTask updateBeaconStatusTask = new UpdateBeaconStatusTask();
+                updateBeaconStatusTask.execute(beaconsJSON.toString());
 
                 //Store just seen beacons for next scan
                 lastSeenBeacons = beaconArrayList;
@@ -182,4 +191,27 @@ public class RangingActivityFragment extends Fragment {
         });
 
     }
+
+    public class UpdateBeaconStatusTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            //Use HTTP classes to send data to server here
+            //Do not update UI in this function
+            BeaconHTTP beaconHTTP = new BeaconHTTP();
+            //Call new method in the beaconHTTP class that takes a JSONArray String
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            //Make sure that the returned value is true in here, since this runs in the UI Thread
+            super.onPostExecute(aBoolean);
+        }
+    }
 }
+

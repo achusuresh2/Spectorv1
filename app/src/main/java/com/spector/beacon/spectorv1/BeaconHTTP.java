@@ -15,19 +15,19 @@ public class BeaconHTTP {
             .build();
     BeaconHTTPInterface service = restAdapter.create(BeaconHTTPInterface.class);
 
-    public Gson getUser (String macAddr){
+    public String getUser (String macAddr){
         return service.getUser(macAddr);
     }
-    public List<Gson> listMacAddr(){
+    public List<String> listMacAddr(){
         return service.listMacAddr();
     }
-    public Gson updateUser (String macAddr, Gson update){
+    public String updateUser (String macAddr, String update){
         return service.updateMacAddrProp(macAddr, update);
     }
-    public Gson deleteMacAddr (String macAddr) {
+    public String deleteMacAddr (String macAddr) {
         return service.deleteMacAddr(macAddr);
     }
-    public Gson createUser (Gson user){
+    public String createUser (String user){
         return service.createUser(user);
     }
 }

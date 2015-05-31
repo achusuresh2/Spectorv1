@@ -98,11 +98,7 @@ public class EnrollBeacon extends ActionBarActivity {
                             case DialogInterface.BUTTON_POSITIVE: {
                                 visibleBeacons = new ArrayList<Beacon>();
                                 visibleBeacons.add(selectedBeacon);
-                                if (enrollBeacons(visibleBeacons) == true) {
-                                    Toast.makeText(context, "Beacon " + selectedBeacon.getMacAddress() + " was successfully enrolled!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Beacon " + selectedBeacon.getMacAddress() + " failed to enroll", Toast.LENGTH_SHORT).show();
-                                }
+                                enrollBeacons(visibleBeacons);
                             }
                         }
                     }
@@ -118,8 +114,6 @@ public class EnrollBeacon extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 enrollBeacons(visibleBeacons);
-                setResult(1);
-                finish();
             }
         });
 
@@ -161,46 +155,16 @@ public class EnrollBeacon extends ActionBarActivity {
     private boolean enrollBeacons(ArrayList<Beacon> beacons) {
         enrollDone = false;
         sessionDetails = ((SpectorApp)getApplicationContext()).getSessionDetails();
-        EstimoteSDK.enableDebugLogging(true);
-        EstimoteSDK.initialize(this, sessionDetails.getAppID(), sessionDetails.getAppToken());
+
         for (Beacon beacon: beacons) {
-            connection = new BeaconConnection(this, beacon, new BeaconConnection.ConnectionCallback() {
-                @Override
-                public void onAuthenticated(BeaconInfo beaconInfo) {
-                    Log.e(this.getClass().toString(), "Connected to beacon: " + beaconInfo.macAddress);
-
-                    //If connected to the beacon, overwrite the proximity UUID
-                    connection.writeMajor(123, new BeaconConnection.WriteCallback() {
-                        @Override
-                        public void onSuccess() {
-                            Log.e(this.getClass().toString(), "UUID Write Successful!");
-                            enrollDone = true;
-                        }
-
-                        @Override
-                        public void onError(EstimoteDeviceException e) {
-                            Log.e(this.getClass().toString(), "Error writing to beacon. " + e.getMessage());
-                        }
-                    });
-
-                    connection.close();
-                }
-
-                @Override
-                public void onAuthenticationError(EstimoteDeviceException e) {
-                    Log.e(this.getClass().toString(), "Error connecting to beacon. " + e.getMessage());
-                }
-
-                @Override
-                public void onDisconnected() {
-                    Log.e(this.getClass().toString(), "Disconnected from beacon");
-                }
-            });
-            Log.e(LOG_TAG, "About to try connection");
+            connection = new BeaconConnection(this, beacon, createConnectionCallBack());
+            showToast("About to try connection");
+        }
+        if (!connection.isConnected()) {
             connection.authenticate();
+        }
 
 
-            }
         if (enrollDone) {
             return true;
         } else {
@@ -209,5 +173,40 @@ public class EnrollBeacon extends ActionBarActivity {
 
     }
 
+    private BeaconConnection.ConnectionCallback createConnectionCallBack() {
+        return new BeaconConnection.ConnectionCallback() {
+            @Override
+            public void onAuthenticated(final BeaconInfo beaconInfo) { runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showToast("Connected to beacon: " + beaconInfo.macAddress);
+                    connection.close();
+                }
+            });
+            }
+
+            @Override
+            public void onAuthenticationError(final EstimoteDeviceException e) { runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showToast("Error connecting to Beacon: " + e.getMessage());
+                }
+            });
+            }
+
+            @Override
+            public void onDisconnected() { runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showToast("Disconnected from Beacon");
+                }
+            });
+            }
+        };
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
 }
 
