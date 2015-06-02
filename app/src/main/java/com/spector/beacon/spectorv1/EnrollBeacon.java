@@ -158,7 +158,7 @@ public class EnrollBeacon extends ActionBarActivity {
 
         for (Beacon beacon: beacons) {
             connection = new BeaconConnection(this, beacon, createConnectionCallBack());
-            showToast("About to try connection");
+            showToast("Connecting to beacon...");
         }
         if (!connection.isConnected()) {
             connection.authenticate();
@@ -180,7 +180,27 @@ public class EnrollBeacon extends ActionBarActivity {
                 @Override
                 public void run() {
                     showToast("Connected to beacon: " + beaconInfo.macAddress);
-                    connection.close();
+                    connection.writeProximityUuid(sessionDetails.getProxUUID(), new BeaconConnection.WriteCallback() {
+                        @Override
+                        public void onSuccess() { runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showToast("UUID Successfully updated! Beacon might no longer be visible here");
+                                connection.close();
+                            }
+                        });
+                        }
+
+                        @Override
+                        public void onError(final EstimoteDeviceException e) { runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showToast("UUID update failed. " + e.getMessage());
+                                connection.close();
+                            }
+                        });
+                        }
+                    });
                 }
             });
             }
