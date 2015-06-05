@@ -1,17 +1,93 @@
 package com.spector.beacon.spectorv1;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.Intent;
+import android.os.RemoteException;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+import com.estimote.sdk.Utils;
+import com.estimote.sdk.exception.EstimoteException;
+
+import java.util.List;
 
 
 public class AssociatePatient extends ActionBarActivity {
+
+    private static String ESTIMOTE_PROXIMITY_UUID = null;
+    private static Region ALL_ESTIMOTE_BEACONS = null;
+    private BeaconManager beaconManager;
+    private String LOG_TAG = "";
+    private SessionDetails sessionDetails = null;
+    private Context context = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_associate_patient);
+
+        //Set up all the default variables
+        sessionDetails = ((SpectorApp)getApplicationContext()).getSessionDetails();
+        ESTIMOTE_PROXIMITY_UUID = sessionDetails.getProxUUID();
+        ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
+        beaconManager = new BeaconManager(this);
+        LOG_TAG = getClass().toString();
+        context = this;
+
+        //Make sure bluetooth is on
+        if (beaconManager.isBluetoothEnabled() == false) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, Activity.RESULT_OK);
+        }
+
+        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+            @Override
+            public void onBeaconsDiscovered(Region region, List<Beacon> list) {
+                Beacon closestBeacon = null;
+                Double cBeaconDist = 100.00;
+
+                for (Beacon b: list) {
+                    if (Utils.computeAccuracy(b) < cBeaconDist) {
+                        closestBeacon = b;
+                        cBeaconDist = Utils.computeAccuracy(b);
+                    }
+                }
+
+                TextView cBeaconText = (TextView)findViewById(R.id.closest_text);
+                if (closestBeacon != null) {
+                    cBeaconText.setText("Mac Address: " + closestBeacon.getMacAddress()
+                            + "\nMajor: " + closestBeacon.getMajor() + "\n Minor: " + closestBeacon.getMinor());
+                }
+
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                try {
+                    beaconManager.startRanging(ALL_ESTIMOTE_BEACONS);
+                    Toast.makeText(context, "Looking for beacons...", Toast.LENGTH_SHORT).show();
+                } catch (RemoteException ex) {
+                    Log.e(LOG_TAG, ex.getMessage());
+                }
+            }
+        });
     }
 
     @Override

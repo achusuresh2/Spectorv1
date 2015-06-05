@@ -33,7 +33,8 @@ public class BeaconManagement extends ActionBarActivity {
         associateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Not implemented!", Toast.LENGTH_SHORT).show();
+                Intent associateIntent = new Intent(v.getContext(), AssociatePatient.class);
+                startActivityForResult(associateIntent, 1);
             }
         });
     }
