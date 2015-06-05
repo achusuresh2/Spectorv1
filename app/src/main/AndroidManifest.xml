@@ -50,6 +50,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.spector.beacon.spectorv1.BeaconManagement" />
         </activity>
+        <activity
+            android:name=".AssociatePatient"
+            android:label="@string/title_activity_associate_patient"
+            android:parentActivityName=".BeaconManagement" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.spector.beacon.spectorv1.BeaconManagement" />
+        </activity>
     </application>
 
 </manifest>
