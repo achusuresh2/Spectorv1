@@ -15,4 +15,11 @@
     <string name="associate_instruction">Bring the patient\'s beacon very close to the phone</string>
     <string name="normal_proximity_uuid">B9407F30-F5F8-466E-AFF9-25556B57FE6D</string>
     <string name="title_activity_associate_patient">Associate Patient with Beacon</string>
+    <string name="title_activity_associate_patient_details">Patient Details</string>
+    <string name="enter_patient_info">Complete the following information</string>
+    <string name="enter_name_hint">Enter name</string>
+    <string name="enter_location_hint">Enter location</string>
+    <string name="select_mobility">How much will the patient be moving around?</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
 </resources>

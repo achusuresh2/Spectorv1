@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.spector.beacon.spectorv1.AssociatePatientDetailsFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_patient_info"
+        android:id="@+id/details_instruction"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/name_text"
+        android:hint="Enter patient name"
+        android:layout_below="@id/details_instruction"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_text"
+        android:hint="Enter patient's location"
+        android:layout_below="@id/name_text"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mobility_instruction"
+        android:text="@string/select_mobility"
+        android:layout_below="@id/location_text"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mobility_instruction"
+        android:id="@+id/mobility_group"
+        android:layout_marginBottom="8dp">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Very little movement"
+            android:id="@+id/low_button"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Some movement"
+            android:id="@+id/medium_button"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A lot of movement"
+            android:id="@+id/high_button"/>
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+        android:layout_below="@id/mobility_group"
+        android:layout_alignParentRight="true"
+        android:id="@+id/submit_button"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:layout_below="@id/mobility_group"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/cancel_button"/>
+</RelativeLayout>

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ public class AssociatePatient extends ActionBarActivity {
     private String LOG_TAG = "";
     private SessionDetails sessionDetails = null;
     private Context context = null;
+    private Beacon closestBeacon = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class AssociatePatient extends ActionBarActivity {
         beaconManager = new BeaconManager(this);
         LOG_TAG = getClass().toString();
         context = this;
+        Button associateButton = (Button)findViewById(R.id.associate_patient_button);
+
 
         //Make sure bluetooth is on
         if (beaconManager.isBluetoothEnabled() == false) {
@@ -54,7 +59,6 @@ public class AssociatePatient extends ActionBarActivity {
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
-                Beacon closestBeacon = null;
                 Double cBeaconDist = 100.00;
 
                 for (Beacon b: list) {
@@ -68,6 +72,20 @@ public class AssociatePatient extends ActionBarActivity {
                 if (closestBeacon != null) {
                     cBeaconText.setText("Mac Address: " + closestBeacon.getMacAddress()
                             + "\nMajor: " + closestBeacon.getMajor() + "\n Minor: " + closestBeacon.getMinor());
+                }
+
+            }
+        });
+
+        associateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (closestBeacon != null) {
+                    Intent patientDetailsIntent = new Intent(context, AssociatePatientDetails.class);
+                    patientDetailsIntent.putExtra("BEACON",closestBeacon);
+                    startActivityForResult(patientDetailsIntent, 1);
+                } else {
+                    Toast.makeText(context, "There are no beacons nearby to associate...", Toast.LENGTH_LONG).show();
                 }
 
             }
